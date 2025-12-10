@@ -6,10 +6,13 @@ const app = express();
 
 app.use(bodyParser.json());
 
-// TU AUTH TOKEN
-const AUTH_TOKEN = "TElOS1RPUEFZMDEtRUMtQ0xJRU5UOk1FVGJiMWFxS2RzTjRnRnJRRUxCVGljc2NjS2hHZw==";
+// ⚠️ AUTH TOKEN — OJO: ESTE ES DE PRUEBA DE NUVEI
+const AUTH_TOKEN =
+  "TElOS1RPUEFZMDEtRUMtQ0xJRU5UOk1FVGJiMWFxS2RzTjRnRnJRRUxCVGljc2NjS2hHZw==";
 
-// GENERAR LINKTOPAY
+// ======================================================
+// 🚀 GENERAR LINKTOPAY
+// ======================================================
 app.post("/create-link", async (req, res) => {
   try {
     const { amount, email, reference, description } = req.body;
@@ -54,26 +57,32 @@ app.post("/create-link", async (req, res) => {
     } else {
       return res.json({ error: data });
     }
-
   } catch (err) {
-    console.error(err);
+    console.error("ERROR SERVIDOR:", err);
     return res.status(500).json({ error: "Error generando enlace" });
   }
 });
 
-// WEBHOOK
+// ======================================================
+// 🚀 WEBHOOK (opcional)
+// ======================================================
 app.post("/webhook", (req, res) => {
   console.log("WEBHOOK:", req.body);
   res.send("ok");
 });
 
-// HOME
+// ======================================================
+// 🚀 HOME
+// ======================================================
 app.get("/", (req, res) => {
-  res.send("Servidor Nuvei funcionando correctamente.");
+  res.send("Servidor Nuvei funcionando correctamente ✔️");
 });
 
-// 🚀 PUERTO CORRECTO PARA RENDER
+// ======================================================
+// 🚀 PUERTO (Render obliga usar process.env.PORT)
+// ======================================================
 app.listen(process.env.PORT || 10000, () => {
   console.log("Servidor corriendo en Render en el puerto", process.env.PORT);
 });
+
 
