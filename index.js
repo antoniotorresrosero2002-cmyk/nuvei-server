@@ -1,22 +1,13 @@
-import express from "express";
-import cors from "cors";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-
-dotenv.config();
+const express = require("express");
+const fetch = require("node-fetch");
+const bodyParser = require("body-parser");
 
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-// APP CODE & KEY USANDO ENV
-const APP_CODE = process.env.SERVER_APP_CODE;
-const APP_KEY = process.env.SERVER_APP_KEY;
+app.use(bodyParser.json());
 
-// GENERAR AUTH TOKEN DINÁMICO
-const getToken = () => {
-  return Buffer.from(`${APP_CODE}:${APP_KEY}`).toString("base64");
-};
+// TU AUTH TOKEN
+const AUTH_TOKEN = "TElOS1RPUEFZMDEtRUMtQ0xJRU5UOk1FVGJiMWFxS2RzTjRnRnJRRUxCVGljc2NjS2hHZw==";
 
 // GENERAR LINKTOPAY
 app.post("/create-link", async (req, res) => {
@@ -48,15 +39,15 @@ app.post("/create-link", async (req, res) => {
       {
         method: "POST",
         headers: {
-          "content-type": "application/json",
-          "auth-token": getToken()
+          "Content-Type": "application/json",
+          "auth-token": AUTH_TOKEN
         },
         body: JSON.stringify(body)
       }
     );
 
     const data = await response.json();
-    console.log("Nuvei:", data);
+    console.log("Respuesta Nuvei:", data);
 
     if (data.payment_url) {
       return res.json({ url: data.payment_url });
@@ -65,25 +56,24 @@ app.post("/create-link", async (req, res) => {
     }
 
   } catch (err) {
-    console.error("ERROR:", err);
+    console.error(err);
     return res.status(500).json({ error: "Error generando enlace" });
   }
 });
 
-// WEBHOOK (opcional)
+// WEBHOOK
 app.post("/webhook", (req, res) => {
-  console.log("Webhook recibido:", req.body);
+  console.log("WEBHOOK:", req.body);
   res.send("ok");
 });
 
-// TEST
+// HOME
 app.get("/", (req, res) => {
-  res.send("Servidor Nuvei funcionando correctamente ✔️");
+  res.send("Servidor Nuvei funcionando correctamente.");
 });
 
-// PUERTO
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log("Servidor corriendo en Render ✔️ Puerto:", PORT);
+// 🚀 PUERTO CORRECTO PARA RENDER
+app.listen(process.env.PORT || 10000, () => {
+  console.log("Servidor corriendo en Render en el puerto", process.env.PORT);
 });
 
